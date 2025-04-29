@@ -8,6 +8,7 @@ import 'package:ar_flutter_plugin/utils/json_converters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart';
+import 'package:ar_flutter_plugin/datatypes/enums.dart';
 
 // Type definitions to enforce a consistent use of the API
 typedef ARHitResultHandler = void Function(List<ARHitTestResult> hits);
