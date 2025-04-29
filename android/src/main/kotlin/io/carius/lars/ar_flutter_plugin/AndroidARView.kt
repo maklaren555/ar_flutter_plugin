@@ -472,7 +472,7 @@ internal class AndroidARView(
         val argHandleRotation: Boolean? = call.argument<Boolean>("handleRotation")
         val argHandlePans: Boolean? = call.argument<Boolean>("handlePans")
         val argShowAnimatedGuide: Boolean? = call.argument<Boolean>("showAnimatedGuide")
-
+        val argPlaneDetectionMode: String? = call.argument<String>("planeDetectionMode")
 
         sceneUpdateListener = com.google.ar.sceneform.Scene.OnUpdateListener {
             frameTime: FrameTime -> onFrame(frameTime)
@@ -517,26 +517,31 @@ internal class AndroidARView(
             pointCloudNode.setParent(null)
         }
 
-        // Configure plane detection
-        val config = arSceneView.session?.config
-        if (config == null) {
-            sessionManagerChannel.invokeMethod("onError", listOf("session is null"))
+         // Замените текущий блок plane detection на:
+    val config = arSceneView.session?.config
+    if (config == null) {
+        sessionManagerChannel.invokeMethod("onError", listOf("session is null"))
+    }
+    
+    when (argPlaneDetectionMode) {
+        "horizontal" -> {
+            config?.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL
         }
-        when (argPlaneDetectionConfig) {
-            1 -> {
-                config?.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL
-            }
-            2 -> {
-                config?.planeFindingMode = Config.PlaneFindingMode.VERTICAL
-            }
-            3 -> {
-                config?.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
-            }
-            else -> {
-                config?.planeFindingMode = Config.PlaneFindingMode.DISABLED
-            }
+        "vertical" -> {
+            config?.planeFindingMode = Config.PlaneFindingMode.VERTICAL
         }
-        arSceneView.session?.configure(config)
+        "both" -> {
+            config?.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
+        }
+        "none" -> {
+            config?.planeFindingMode = Config.PlaneFindingMode.DISABLED
+        }
+        else -> {
+            // По умолчанию - горизонтальные плоскости
+            config?.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL
+        }
+    }
+    arSceneView.session?.configure(config)
 
         // Configure whether or not detected planes should be shown
         arSceneView.planeRenderer.isVisible = if (argShowPlanes == true) true else false
