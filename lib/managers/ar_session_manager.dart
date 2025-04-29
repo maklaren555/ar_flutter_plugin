@@ -155,9 +155,9 @@ class ARSessionManager {
     bool handleTaps = true,
     bool handlePans = false, // nodes are not draggable by default
     bool handleRotation = false, // nodes can not be rotated by default
-    PlaneDetectionMode planeDetectionMode = PlaneDetectionMode.horizontal,
+    String planeDetectionMode = 'horizontal',
   }) async {
-    _channel.invokeMethod<void>('init', {
+    await _channel.invokeMethod<void>('init', {
       'showAnimatedGuide': showAnimatedGuide,
       'showFeaturePoints': showFeaturePoints,
       'planeDetectionConfig': planeDetectionConfig.index,
@@ -167,7 +167,7 @@ class ARSessionManager {
       'handleTaps': handleTaps,
       'handlePans': handlePans,
       'handleRotation': handleRotation,
-      'planeDetectionMode': planeDetectionMode.toString(),
+      'planeDetectionMode': planeDetectionMode,
     });
   }
 
